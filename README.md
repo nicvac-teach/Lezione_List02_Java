@@ -888,8 +888,8 @@ Restituisco "B"
 
 1. Verifica che la posizione sia valida
 2. **Caso speciale**: se `posizione == 0`, salva il dato, aggiorna `head = head.next`, restituisci il dato
-3. Altrimenti, scorri fino alla posizione `posizione - 1`
-4. Salva il dato del nodo da eliminare
+3. Altrimenti, scorri tenendo traccia del nodo precedente e di quello corrente, con un contatore
+4. Quando il contatore raggiunge la posizione, salva il dato di `corrente`
 5. Imposta `precedente.next = corrente.next`
 6. Restituisci il dato salvato
 
@@ -916,20 +916,21 @@ public T cancellaInPosizione(int posizione) {
     }
     
     Nodo<T> precedente = head;
-    int i = 0;
+    Nodo<T> corrente = head.next;
+    int i = 1;
     
-    while (precedente.next != null && i < posizione - 1) {
-        precedente = precedente.next;
+    while (corrente != null) {
+        if (i == posizione) {
+            T dato = corrente.dato;
+            precedente.next = corrente.next;
+            return dato;
+        }
+        precedente = corrente;
+        corrente = corrente.next;
         i++;
     }
     
-    if (precedente.next == null) {
-        throw new IndexOutOfBoundsException("Posizione oltre la fine della lista");
-    }
-    
-    T dato = precedente.next.dato;
-    precedente.next = precedente.next.next;
-    return dato;
+    throw new IndexOutOfBoundsException("Posizione oltre la fine della lista");
 }
 ```
 
@@ -1272,20 +1273,21 @@ public class Lista<T> {
         }
         
         Nodo<T> precedente = head;
-        int i = 0;
+        Nodo<T> corrente = head.next;
+        int i = 1;
         
-        while (precedente.next != null && i < posizione - 1) {
-            precedente = precedente.next;
+        while (corrente != null) {
+            if (i == posizione) {
+                T dato = corrente.dato;
+                precedente.next = corrente.next;
+                return dato;
+            }
+            precedente = corrente;
+            corrente = corrente.next;
             i++;
         }
         
-        if (precedente.next == null) {
-            throw new IndexOutOfBoundsException("Posizione oltre la fine della lista");
-        }
-        
-        T dato = precedente.next.dato;
-        precedente.next = precedente.next.next;
-        return dato;
+        throw new IndexOutOfBoundsException("Posizione oltre la fine della lista");
     }
 
     public void concatena(Lista<T> altraLista) {
